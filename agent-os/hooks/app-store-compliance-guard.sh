@@ -315,8 +315,9 @@ if [ "$IS_IOS" -eq 1 ]; then
     [ -f "$candidate" ] && { MANIFEST_VALIDATOR="$candidate"; break; }
   done
   if [ -n "$MANIFEST_VALIDATOR" ] && command -v python3 >/dev/null 2>&1; then
+    # Same exclusions as the source file list. A pod's manifest is the vendor's job, a Tests fixture never ships.
     find "$DIR" -name 'PrivacyInfo.xcprivacy' 2>/dev/null \
-      | grep -vE '/(node_modules|Pods|\.git|build|DerivedData|vendor|Carthage)/' \
+      | grep -vE '/(node_modules|Pods|\.git|build|DerivedData|vendor|\.dart_tool|Carthage|[A-Za-z0-9_]*Tests|androidTest|__tests__)/' \
       | while IFS= read -r manifest; do
           python3 "$MANIFEST_VALIDATOR" "$manifest" 2>/dev/null
         done > "$FILELIST.manifest" 2>/dev/null || true

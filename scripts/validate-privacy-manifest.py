@@ -69,10 +69,9 @@ def check(path):
         if not entry.get("NSPrivacyCollectedDataTypePurposes", []):
             out.append(("high", "APPLE-MANIFEST-NO-PURPOSE",
                         f"{path}: {label} declares no purposes; at least one is required."))
-        # A type marked as used for tracking while the manifest says the app
-        # does not track is the same contradiction reviewers flag.
+        # Internally contradictory, but not a documented upload rejection, so it surfaces without blocking.
         if entry.get("NSPrivacyCollectedDataTypeTracking") and not tracking:
-            out.append(("critical", "APPLE-MANIFEST-TRACKING-CONTRADICTION",
+            out.append(("high", "APPLE-MANIFEST-TRACKING-CONTRADICTION",
                         f"{path}: {label} is marked used for tracking but NSPrivacyTracking is false."))
 
     for api in d.get("NSPrivacyAccessedAPITypes", []):
